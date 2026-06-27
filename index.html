@@ -17,6 +17,44 @@
 
     h1 { margin-bottom: 1.5rem; font-size: 1.5rem; }
 
+    /* ── Stats ── */
+    #stats-section {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .stat-card {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 6px;
+      padding: 0.9rem 1.2rem;
+      min-width: 140px;
+    }
+
+    .stat-card .stat-value {
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1.1;
+      color: #222;
+    }
+
+    .stat-card .stat-label {
+      font-size: 0.78rem;
+      color: #888;
+      margin-top: 0.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .stat-card.breakdown .stat-value {
+      font-size: 0.9rem;
+      font-weight: normal;
+      color: #444;
+      line-height: 1.6;
+    }
+
     /* ── Form ── */
     form {
       background: #fff;
@@ -33,6 +71,7 @@
 
     input[type="text"],
     input[type="number"],
+    input[type="date"],
     select {
       padding: 0.45rem 0.6rem;
       border: 1px solid #ccc;
@@ -43,7 +82,33 @@
 
     input[type="text"]:focus,
     input[type="number"]:focus,
+    input[type="date"]:focus,
     select:focus { outline: 2px solid #4a90d9; border-color: transparent; }
+
+    select:disabled { background: #f0f0f0; color: #999; cursor: not-allowed; }
+
+    .field.hidden { display: none; }
+
+    /* ── Checkbox row ── */
+    .checkbox-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .checkbox-row input[type="checkbox"] {
+      width: 1rem;
+      height: 1rem;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .checkbox-row label {
+      font-size: 0.9rem;
+      font-weight: normal;
+      color: #333;
+      cursor: pointer;
+    }
 
     /* ── Rating ── */
     #rating-field { display: none; }
@@ -67,7 +132,6 @@
       background-clip: text;
     }
 
-    /* Invisible hover zones covering each half of a star */
     .star-rating .zone {
       position: absolute;
       top: 0;
@@ -109,7 +173,7 @@
     button[type="submit"]:not(:disabled):hover { background: #357abd; }
 
     /* ── Book list ── */
-    #list-section { margin-top: 2rem; max-width: 860px; }
+    #list-section { margin-top: 2rem; max-width: 960px; }
     #list-section h2 { font-size: 1.1rem; margin-bottom: 0.75rem; }
 
     #empty-msg { color: #888; font-size: 0.9rem; }
@@ -135,16 +199,61 @@
     tr:last-child td { border-bottom: none; }
     tr:hover td { background: #fafafa; }
 
-    .status-badge {
-      display: inline-block;
-      padding: 0.15rem 0.5rem;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 600;
+    /* Status select inside table */
+    td select {
+      padding: 0.2rem 0.4rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.82rem;
+      background: #fff;
+      cursor: pointer;
     }
-    .status-want  { background: #e8f0fe; color: #3c5bbb; }
-    .status-reading { background: #fef6e4; color: #a05c00; }
-    .status-read  { background: #e6f4ea; color: #276a34; }
+
+    /* Inline date prompt row */
+    tr.date-prompt-row td {
+      background: #f0f6ff;
+      border-bottom: 2px solid #4a90d9;
+      padding: 0.6rem 0.8rem;
+    }
+
+    .date-prompt {
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+      flex-wrap: wrap;
+    }
+
+    .date-prompt label { font-size: 0.85rem; font-weight: 600; color: #444; white-space: nowrap; }
+
+    .date-prompt input[type="date"] {
+      padding: 0.3rem 0.5rem;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      font-size: 0.88rem;
+    }
+
+    .date-prompt button {
+      padding: 0.3rem 0.8rem;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+    }
+
+    .date-prompt .btn-confirm {
+      background: #4a90d9;
+      color: #fff;
+    }
+    .date-prompt .btn-confirm:hover { background: #357abd; }
+    .date-prompt .btn-confirm:disabled { background: #b0c8e8; cursor: not-allowed; }
+
+    .date-prompt .btn-cancel {
+      background: #eee;
+      color: #444;
+    }
+    .date-prompt .btn-cancel:hover { background: #ddd; }
+
+    .date-muted { color: #bbb; font-size: 0.85rem; }
 
     .star-display, .star-half, .star-empty { letter-spacing: -0.05em; }
     .star-display { color: #f5a623; }
@@ -161,6 +270,23 @@
 
 <h1>Reading Tracker</h1>
 
+<!-- Stats -->
+<div id="stats-section">
+  <div class="stat-card">
+    <div class="stat-value" id="stat-finished">0</div>
+    <div class="stat-label">Finished this year</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-value" id="stat-pages">0</div>
+    <div class="stat-label">Pages read this year</div>
+  </div>
+  <div class="stat-card breakdown">
+    <div class="stat-value" id="stat-breakdown">—</div>
+    <div class="stat-label">By status</div>
+  </div>
+</div>
+
+<!-- Add form -->
 <form id="add-form" novalidate>
   <div class="field">
     <label for="title">Title</label>
@@ -183,6 +309,21 @@
     </select>
   </div>
 
+  <div class="field hidden" id="start-date-field">
+    <label for="start-date">Date started</label>
+    <input type="date" id="start-date">
+  </div>
+
+  <div class="field hidden" id="finish-date-field">
+    <label for="finish-date">Date finished</label>
+    <input type="date" id="finish-date">
+  </div>
+
+  <div class="checkbox-row">
+    <input type="checkbox" id="already-read">
+    <label for="already-read">Mark as already read</label>
+  </div>
+
   <div class="field" id="rating-field">
     <label>Rating</label>
     <div class="star-rating" id="star-rating"></div>
@@ -194,6 +335,7 @@
   <button type="submit" id="add-btn" disabled>Add book</button>
 </form>
 
+<!-- Book list -->
 <section id="list-section">
   <h2>My Books</h2>
   <p id="empty-msg">No books added yet.</p>
@@ -204,6 +346,8 @@
         <th>Author</th>
         <th>Pages</th>
         <th>Status</th>
+        <th>Started</th>
+        <th>Finished</th>
         <th>Rating</th>
       </tr>
     </thead>
@@ -213,8 +357,9 @@
 
 <script>
   const STORAGE_KEY = 'books';
+  const THIS_YEAR = new Date().getFullYear();
 
-  // ── State ──────────────────────────────────────────────────────────────────
+  // ── Storage ────────────────────────────────────────────────────────────────
   function loadBooks() {
     try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || []; }
     catch { return []; }
@@ -225,36 +370,27 @@
   }
 
   // ── DOM refs ───────────────────────────────────────────────────────────────
-  const form       = document.getElementById('add-form');
-  const titleInput = document.getElementById('title');
-  const authorInput= document.getElementById('author');
-  const pagesInput = document.getElementById('page-count');
-  const statusSel  = document.getElementById('status');
-  const ratingField= document.getElementById('rating-field');
-  const addBtn     = document.getElementById('add-btn');
-  const errorMsg   = document.getElementById('error-msg');
-  const emptyMsg   = document.getElementById('empty-msg');
-  const bookTable  = document.getElementById('book-table');
-  const bookTbody  = document.getElementById('book-tbody');
-
-  // ── Add-button gate ────────────────────────────────────────────────────────
-  function updateAddBtn() {
-    const ok = titleInput.value.trim() !== ''
-            && authorInput.value.trim() !== ''
-            && pagesInput.value.trim() !== ''
-            && parseInt(pagesInput.value, 10) >= 1;
-    addBtn.disabled = !ok;
-  }
-
-  [titleInput, authorInput, pagesInput].forEach(el =>
-    el.addEventListener('input', updateAddBtn)
-  );
+  const form            = document.getElementById('add-form');
+  const titleInput      = document.getElementById('title');
+  const authorInput     = document.getElementById('author');
+  const pagesInput      = document.getElementById('page-count');
+  const statusSel       = document.getElementById('status');
+  const startDateField  = document.getElementById('start-date-field');
+  const finishDateField = document.getElementById('finish-date-field');
+  const startDateInput  = document.getElementById('start-date');
+  const finishDateInput = document.getElementById('finish-date');
+  const alreadyRead     = document.getElementById('already-read');
+  const ratingField     = document.getElementById('rating-field');
+  const addBtn          = document.getElementById('add-btn');
+  const errorMsg        = document.getElementById('error-msg');
+  const emptyMsg        = document.getElementById('empty-msg');
+  const bookTable       = document.getElementById('book-table');
+  const bookTbody       = document.getElementById('book-tbody');
 
   // ── Star rating widget ─────────────────────────────────────────────────────
   const starContainer = document.getElementById('star-rating');
   let selectedRating = 0;
 
-  // Build 5 stars, each with two invisible half-zones
   for (let i = 1; i <= 5; i++) {
     const star = document.createElement('span');
     star.className = 'star';
@@ -277,9 +413,9 @@
   function highlightStars(rating) {
     starContainer.querySelectorAll('.star').forEach((star, idx) => {
       const n = idx + 1;
-      if (rating >= n)         star.dataset.state = 'full';
-      else if (rating >= n - 0.5) star.dataset.state = 'half';
-      else                     star.dataset.state = 'empty';
+      if (rating >= n)             star.dataset.state = 'full';
+      else if (rating >= n - 0.5)  star.dataset.state = 'half';
+      else                         star.dataset.state = 'empty';
     });
   }
 
@@ -305,33 +441,88 @@
     highlightStars(0);
   }
 
-  // ── Rating visibility ──────────────────────────────────────────────────────
-  function syncRatingVisibility() {
-    if (statusSel.value === 'read') {
+  // ── Add-button gate ────────────────────────────────────────────────────────
+  function updateAddBtn() {
+    const baseOk = titleInput.value.trim() !== ''
+                && authorInput.value.trim() !== ''
+                && pagesInput.value.trim() !== ''
+                && parseInt(pagesInput.value, 10) >= 1;
+
+    let datesOk = true;
+    if (!alreadyRead.checked) {
+      if (statusSel.value === 'reading') {
+        datesOk = startDateInput.value !== '';
+      } else if (statusSel.value === 'read') {
+        datesOk = finishDateInput.value !== '';
+      }
+    }
+
+    addBtn.disabled = !(baseOk && datesOk);
+  }
+
+  // ── Sync form fields ───────────────────────────────────────────────────────
+  function syncFormFields() {
+    const checked = alreadyRead.checked;
+    const status  = checked ? 'read' : statusSel.value;
+
+    // Status select
+    statusSel.disabled = checked;
+    if (checked) statusSel.value = 'read';
+
+    // Date fields
+    if (checked) {
+      startDateField.classList.remove('hidden');
+      finishDateField.classList.remove('hidden');
+    } else if (status === 'reading') {
+      startDateField.classList.remove('hidden');
+      finishDateField.classList.add('hidden');
+      finishDateInput.value = '';
+    } else if (status === 'read') {
+      startDateField.classList.add('hidden');
+      startDateInput.value = '';
+      finishDateField.classList.remove('hidden');
+    } else {
+      startDateField.classList.add('hidden');
+      startDateInput.value = '';
+      finishDateField.classList.add('hidden');
+      finishDateInput.value = '';
+    }
+
+    // Rating
+    if (status === 'read') {
       ratingField.classList.add('visible');
     } else {
       ratingField.classList.remove('visible');
       resetStars();
     }
+
+    updateAddBtn();
   }
 
-  statusSel.addEventListener('change', syncRatingVisibility);
+  statusSel.addEventListener('change', syncFormFields);
+  alreadyRead.addEventListener('change', syncFormFields);
+  startDateInput.addEventListener('input', updateAddBtn);
+  finishDateInput.addEventListener('input', updateAddBtn);
+  [titleInput, authorInput, pagesInput].forEach(el =>
+    el.addEventListener('input', updateAddBtn)
+  );
 
   // ── Form submit ────────────────────────────────────────────────────────────
   form.addEventListener('submit', e => {
     e.preventDefault();
 
-    const title  = titleInput.value.trim();
-    const author = authorInput.value.trim();
-    const pages  = parseInt(pagesInput.value, 10);
-    const status = statusSel.value;
-    const rating = (status === 'read' && selectedRating > 0) ? selectedRating : null;
+    const title      = titleInput.value.trim();
+    const author     = authorInput.value.trim();
+    const pages      = parseInt(pagesInput.value, 10);
+    const status     = alreadyRead.checked ? 'read' : statusSel.value;
+    const startDate  = startDateInput.value  || null;
+    const finishDate = finishDateInput.value || null;
+    const rating     = (status === 'read' && selectedRating > 0) ? selectedRating : null;
 
     const books = loadBooks();
 
-    // Duplicate check
     const isDuplicate = books.some(b =>
-      b.title.toLowerCase() === title.toLowerCase() &&
+      b.title.toLowerCase()  === title.toLowerCase() &&
       b.author.toLowerCase() === author.toLowerCase()
     );
 
@@ -341,12 +532,13 @@
     }
 
     clearError();
-    books.push({ title, author, pageCount: pages, status, rating });
+    books.push({ title, author, pageCount: pages, status, rating, startDate, finishDate });
     saveBooks(books);
     renderList(books);
+    renderStats(books);
     form.reset();
     resetStars();
-    syncRatingVisibility();
+    syncFormFields();
     updateAddBtn();
   });
 
@@ -361,6 +553,27 @@
     errorMsg.classList.remove('visible');
   }
 
+  // ── Stats ──────────────────────────────────────────────────────────────────
+  function renderStats(books) {
+    const finished = books.filter(b =>
+      b.status === 'read' &&
+      b.finishDate &&
+      new Date(b.finishDate).getFullYear() === THIS_YEAR
+    );
+
+    document.getElementById('stat-finished').textContent = finished.length;
+    document.getElementById('stat-pages').textContent =
+      finished.reduce((sum, b) => sum + (b.pageCount || 0), 0).toLocaleString();
+
+    const counts = { 'want-to-read': 0, 'reading': 0, 'read': 0 };
+    books.forEach(b => { if (counts[b.status] !== undefined) counts[b.status]++; });
+
+    document.getElementById('stat-breakdown').innerHTML =
+      `Want to Read: <strong>${counts['want-to-read']}</strong><br>` +
+      `Reading: <strong>${counts['reading']}</strong><br>` +
+      `Read: <strong>${counts['read']}</strong>`;
+  }
+
   // ── Render list ────────────────────────────────────────────────────────────
   const STATUS_LABELS = {
     'want-to-read': 'Want to Read',
@@ -368,25 +581,22 @@
     'read':         'Read',
   };
 
-  const STATUS_CLASSES = {
-    'want-to-read': 'status-want',
-    'reading':      'status-reading',
-    'read':         'status-read',
-  };
-
   function renderStars(rating) {
-    if (rating === null) return '—';
+    if (rating === null || rating === undefined) return '—';
     let html = '';
     for (let i = 1; i <= 5; i++) {
-      if (rating >= i) {
-        html += `<span class="star-display">&#9733;</span>`;
-      } else if (rating >= i - 0.5) {
-        html += `<span class="star-half">&#9733;</span>`;
-      } else {
-        html += `<span class="star-empty">&#9733;</span>`;
-      }
+      if (rating >= i)             html += `<span class="star-display">&#9733;</span>`;
+      else if (rating >= i - 0.5)  html += `<span class="star-half">&#9733;</span>`;
+      else                         html += `<span class="star-empty">&#9733;</span>`;
     }
     return html;
+  }
+
+  function fmtDate(d) {
+    if (!d) return '<span class="date-muted">—</span>';
+    // Parse YYYY-MM-DD without timezone shift
+    const [y, m, day] = d.split('-');
+    return `${day}/${m}/${y}`;
   }
 
   function renderList(books) {
@@ -397,15 +607,108 @@
     }
     emptyMsg.style.display = 'none';
     bookTable.style.display = '';
-    bookTbody.innerHTML = books.map(b => `
-      <tr>
+
+    bookTbody.innerHTML = books.map((b, idx) => `
+      <tr data-idx="${idx}">
         <td>${escHtml(b.title)}</td>
         <td>${escHtml(b.author)}</td>
         <td>${b.pageCount}</td>
-        <td><span class="status-badge ${STATUS_CLASSES[b.status]}">${STATUS_LABELS[b.status]}</span></td>
+        <td>
+          <select onchange="handleStatusChange(${idx}, this.value, this)">
+            <option value="want-to-read"${b.status === 'want-to-read' ? ' selected' : ''}>Want to Read</option>
+            <option value="reading"${b.status === 'reading' ? ' selected' : ''}>Reading</option>
+            <option value="read"${b.status === 'read' ? ' selected' : ''}>Read</option>
+          </select>
+        </td>
+        <td>${fmtDate(b.startDate)}</td>
+        <td>${fmtDate(b.finishDate)}</td>
         <td>${renderStars(b.rating)}</td>
       </tr>
     `).join('');
+  }
+
+  // ── Inline status change ───────────────────────────────────────────────────
+  function handleStatusChange(idx, newStatus, selectEl) {
+    const books     = loadBooks();
+    const book      = books[idx];
+    const oldStatus = book.status;
+
+    if (newStatus === oldStatus) return;
+
+    // Remove any existing prompt row before showing a new one
+    removePromptRow();
+
+    const statusOrder = { 'want-to-read': 0, 'reading': 1, 'read': 2 };
+    const isBackward  = statusOrder[newStatus] < statusOrder[oldStatus];
+
+    if (isBackward) {
+      book.status     = newStatus;
+      book.finishDate = null;
+      book.rating     = null;
+      if (newStatus === 'want-to-read') book.startDate = null;
+      books[idx] = book;
+      saveBooks(books);
+      renderList(books);
+      renderStats(books);
+      return;
+    }
+
+    // Forward move — determine which date is needed
+    const needsStartDate  = newStatus === 'reading';
+    const needsFinishDate = newStatus === 'read';
+
+    const bookRow = bookTbody.querySelector(`tr[data-idx="${idx}"]`);
+    const promptRow = document.createElement('tr');
+    promptRow.className = 'date-prompt-row';
+
+    const promptLabel = needsStartDate  ? 'Date started:'
+                      : needsFinishDate ? 'Date finished:' : '';
+
+    promptRow.innerHTML = `
+      <td colspan="7">
+        <div class="date-prompt">
+          <label>${promptLabel}</label>
+          <input type="date" id="prompt-date">
+          <button class="btn-confirm" id="prompt-confirm" disabled>Confirm</button>
+          <button class="btn-cancel" id="prompt-cancel">Cancel</button>
+        </div>
+      </td>
+    `;
+
+    bookRow.insertAdjacentElement('afterend', promptRow);
+
+    const promptDateInput = document.getElementById('prompt-date');
+    const promptConfirm   = document.getElementById('prompt-confirm');
+    const promptCancel    = document.getElementById('prompt-cancel');
+
+    promptDateInput.focus();
+
+    promptDateInput.addEventListener('input', () => {
+      promptConfirm.disabled = promptDateInput.value === '';
+    });
+
+    promptConfirm.addEventListener('click', () => {
+      if (!promptDateInput.value) return;
+      book.status = newStatus;
+      if (needsStartDate)  book.startDate  = promptDateInput.value;
+      if (needsFinishDate) book.finishDate = promptDateInput.value;
+      books[idx] = book;
+      saveBooks(books);
+      removePromptRow();
+      renderList(books);
+      renderStats(books);
+    });
+
+    promptCancel.addEventListener('click', () => {
+      // Revert the select to the old status
+      selectEl.value = oldStatus;
+      removePromptRow();
+    });
+  }
+
+  function removePromptRow() {
+    const existing = bookTbody.querySelector('.date-prompt-row');
+    if (existing) existing.remove();
   }
 
   function escHtml(str) {
@@ -413,7 +716,9 @@
   }
 
   // ── Init ───────────────────────────────────────────────────────────────────
-  renderList(loadBooks());
+  const books = loadBooks();
+  renderStats(books);
+  renderList(books);
 </script>
 </body>
 </html>
